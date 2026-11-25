@@ -11,6 +11,7 @@ const anim = { reg: 0, kd: 0, dj: 0, cup: 0 };
 
 const game = {
   epLabel: '3편',
+  epNum: 3,
   createState, doAction,
   docs: DOCS,
   intro: INTRO, ending: ENDING, endingLast: ENDING_LAST,

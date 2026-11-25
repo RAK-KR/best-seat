@@ -11,11 +11,12 @@ let placed = [];
 
 const game = {
   epLabel: '5편',
+  epNum: 5,
   createState, doAction,
   docs: DOCS,
   intro: INTRO, ending: ENDING, endingLast: ENDING_LAST, endingStep: 2.6,
   endingImage: () => { const c = makeCanvas(560, 320); drawLastFrame(c); return c; },
-  nextLink: { label: '시리즈 처음으로', href: '../' },
+  nextLink: null,
   startPos: { x: 0, z: 7.3, yaw: 0 },
   itemNames: { negatives: '필름 세 컷', millKey: '정미소 열쇠', officeKey: '사무실 열쇠', neg5: '넷째 컷' },
   labels: {

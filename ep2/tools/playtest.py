@@ -34,6 +34,7 @@ with sync_playwright() as p:
     pg.route('**/unpkg.com/three@0.160.0/examples/jsm/**', lambda r: r.fulfill(path=os.path.join(JSM, r.request.url.split('/examples/jsm/')[1]), content_type='application/javascript'))
     pg.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
     pg.route('**/fonts.gstatic.com/**', lambda r: r.abort())
+    pg.add_init_script("localStorage.setItem('bestseat-unlock-all','1')")
     pg.goto(f'http://127.0.0.1:{PORT}/ep2/index.html')
     pg.wait_for_function('window.__game', timeout=30000)
     pg.wait_for_timeout(800)
@@ -168,6 +169,7 @@ with sync_playwright() as p:
     pg.screenshot(path=f'{OUT}/18_ending.png')
     pg.mouse.click(640, 360); pg.wait_for_timeout(800)
     pg.screenshot(path=f'{OUT}/19_ending_all.png', full_page=True)
+    check(2 in pg.evaluate("JSON.parse(localStorage.getItem('bestseat-cleared') || '[]')"), '엔딩 후 2편 완료 기록')
     b.close()
 
 httpd.shutdown()

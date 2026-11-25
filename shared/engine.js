@@ -168,6 +168,7 @@ export function run(game) {
     setTimeout(showEnding, 3300);
   }
   function showEnding() {
+    window.BSP && window.BSP.markCleared(game.epNum);
     sfx.ending();
     const el = $('ending'), body = $('ending-lines');
     body.innerHTML = '';
@@ -186,11 +187,12 @@ export function run(game) {
     last.style.animationDelay = `${1.8 + n * step}s`; body.appendChild(last);
     const secs = Math.round((performance.now() - startTime) / 1000);
     const meta = document.createElement('p'); meta.className = 'meta';
-    meta.innerHTML = `${game.epLabel} 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button>${game.nextLink ? ` <button id="toNext">${game.nextLink.label}</button>` : ''}`;
+    meta.innerHTML = `${game.epLabel} 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button>${game.nextLink ? ` <button id="toNext">${game.nextLink.label}</button>` : ''} <button id="toHub">목록으로</button>`;
     meta.style.animationDelay = `${3.6 + n * step}s`;
     body.appendChild(meta);
     $('again').onclick = () => location.reload();
     if (game.nextLink) $('toNext').onclick = () => { location.href = game.nextLink.href; };
+    $('toHub').onclick = () => { location.href = '../'; };
     el.onmousedown = (e) => { if (e.target.tagName !== 'BUTTON') body.classList.add('all'); };
     ui.fade(false, '#fff8ea', 2000);
   }

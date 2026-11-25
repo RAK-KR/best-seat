@@ -468,6 +468,7 @@ function finish() {
 }
 
 function showEnding() {
+  window.BSP && window.BSP.markCleared(2);
   sfx.ending();
   const el = $('ending'), body = $('ending-lines');
   body.innerHTML = '';
@@ -483,11 +484,12 @@ function showEnding() {
   last.style.animationDelay = `${1.8 + ENDING.length * 2.1}s`; body.appendChild(last);
   const secs = Math.round((performance.now() - startTime) / 1000);
   const meta = document.createElement('p'); meta.className = 'meta';
-  meta.innerHTML = `2편 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button> <button id="toEp3">3편: 커피 두 잔</button>`;
+  meta.innerHTML = `2편 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button> <button id="toEp3">3편: 커피 두 잔</button> <button id="toHub">목록으로</button>`;
   meta.style.animationDelay = `${3.6 + ENDING.length * 2.1}s`;
   body.appendChild(meta);
   $('again').onclick = () => location.reload();
   $('toEp3').onclick = () => { location.href = '../ep3/'; };
+  $('toHub').onclick = () => { location.href = '../'; };
   el.onmousedown = () => body.classList.add('all');
   ui.fade(false, '#fff8ea', 2000);
 }

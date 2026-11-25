@@ -21,6 +21,7 @@ class Tester:
         pg.route('**/unpkg.com/three@0.160.0/examples/jsm/**', lambda r: r.fulfill(path=os.path.join(jsm, r.request.url.split('/examples/jsm/')[1]), content_type='application/javascript'))
         pg.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
         pg.route('**/fonts.gstatic.com/**', lambda r: r.abort())
+        pg.add_init_script("localStorage.setItem('bestseat-unlock-all','1')")
         pg.goto(f'http://127.0.0.1:{self.httpd.server_address[1]}/{page_path}')
         pg.wait_for_function('window.__game', timeout=60000)
         pg.wait_for_timeout(800)
@@ -63,6 +64,7 @@ class Tester:
         for k in s: self.pg.keyboard.press(k)
         if enter: self.pg.keyboard.press('Enter')
         self.wait(900)
+    def cleared(self): return self.pg.evaluate("JSON.parse(localStorage.getItem('bestseat-cleared') || '[]')")
     def end(self):
         self.b.close(); self.p.stop(); self.httpd.shutdown()
         real = [e for e in self.errors if 'fonts' not in e and 'ERR_FAILED' not in e]

@@ -124,3 +124,4 @@ button.vhover { background: #45331f !important; }
 .slot .ico-net { background: radial-gradient(circle at 70% 30%, transparent 30%, #ccc 32%, #ccc 38%, transparent 40%), linear-gradient(135deg, transparent 45%, #8a6a3a 46%, #8a6a3a 54%, transparent 55%); }
 .slot .ico-box, .slot .ico-can { background: #f0e6d2; border: 2px solid #c86a7a; }
 .slot .ico-negatives { background: repeating-linear-gradient(90deg, #2a1f12 0 4px, #c87a2a 4px 6px); }
+.hublink { display: block; width: fit-content; margin: 16px auto 0; }

@@ -3,67 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>제일 좋은 자리 · THE BEST SEAT</title>
+  <title>빛나 사진관 · 1인칭 방탈출 시리즈</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Gothic+A1:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script type="importmap">
-    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gothic+A1:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hub/hub.css">
+  <script src="shared/progress.js"></script>
 </head>
 <body>
-  <div id="game"></div>
   <div id="grain"></div>
-  <div id="vignette"></div>
-
-  <div id="crosshair"></div>
-  <div id="vcursor"></div>
-  <div id="prompt"></div>
-  <div id="toast"></div>
-  <div id="inventory"></div>
-
-  <div id="overlay">
-    <div id="panel">
-      <div id="panel-title"></div>
-      <div id="panel-body"></div>
-      <div id="panel-text"></div>
-      <div id="panel-buttons"></div>
-      <div id="panel-close">E · Esc · 바깥 클릭으로 닫기</div>
-    </div>
-  </div>
-
-  <div id="loading" class="screen show"><p>불러오는 중</p></div>
-
-  <div id="title" class="screen">
-    <div class="title-box">
-      <div class="series">빛나 사진관 · 1편</div>
-      <h1>제일 좋은 자리</h1>
-      <h2>THE BEST SEAT</h2>
-      <button id="start">시작하기</button>
-      <div class="controls">
-        WASD 이동 · 마우스 시점 · E 또는 클릭 살펴보기<br>
-        Tab 수첩 · H 힌트 · Esc 일시정지
+  <main>
+    <header>
+      <div class="kicker">1인칭 3D 방탈출 시리즈 · 다섯 편</div>
+      <h1>빛나 사진관</h1>
+      <p class="lead">할아버지가 세상을 떠나고 한 달. 생일 아침, 사진관 2층으로 오라는 편지가 도착했다.</p>
+    </header>
+    <ol id="episodes"></ol>
+    <footer>
+      <p class="tip">순서대로 하는 것을 권합니다. 앞 편을 끝내면 다음 편이 열리고, 진행 기록은 이 브라우저에 저장됩니다.</p>
+      <p class="tip">PC 전용 · 헤드폰 권장</p>
+      <div class="tools">
+        <button id="unlock">이미 해 본 편이 있어요 (모든 편 열기)</button>
+        <button id="reset">기록 지우기</button>
       </div>
-      <label class="sens">마우스 감도 <input id="sens" type="range" min="0.3" max="2.5" step="0.05" value="1"></label>
-      <div class="note">헤드폰을 권장합니다 · PC 전용</div>
-      <a class="eplink" href="ep2/">2편 · 늘 하던 대로 →</a>
-    </div>
-  </div>
-
-  <div id="intro" class="screen">
-    <div id="intro-lines"></div>
-    <button id="intro-skip">들어간다</button>
-  </div>
-
-  <div id="pause" class="screen"><p>클릭해서 계속</p></div>
-
-  <div id="fade"></div>
-
-  <div id="ending" class="screen">
-    <div id="ending-lines"></div>
-  </div>
-
-  <script type="module" src="js/main.js"></script>
+    </footer>
+  </main>
+  <script src="hub/hub.js"></script>
 </body>
 </html>

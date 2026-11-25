@@ -12,6 +12,7 @@ let frameAcc = 0, frame = 0, drawAcc = 0;
 
 const game = {
   epLabel: '4편',
+  epNum: 4,
   exposure: 1.15,
   createState, doAction,
   docs: DOCS,
