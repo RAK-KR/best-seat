@@ -470,10 +470,11 @@ function showEnding() {
   const secs = Math.round((performance.now() - startTime) / 1000);
   const meta = document.createElement('p');
   meta.className = 'meta';
-  meta.innerHTML = `플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button>`;
+  meta.innerHTML = `플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button> <button id="toEp2">2편: 늘 하던 대로</button>`;
   meta.style.animationDelay = `${3.6 + lines.length * 2.1}s`;
   body.appendChild(meta);
   $('again').onclick = () => location.reload();
+  $('toEp2').onclick = () => { location.href = 'ep2/'; };
   el.onmousedown = () => body.classList.add('all');
   ui.fade(false, '#fff8ea', 2000);
 }
