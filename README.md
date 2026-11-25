@@ -5,6 +5,9 @@
 ## 플레이 주소
 - 1편 · 제일 좋은 자리 (THE BEST SEAT): https://rak-kr.github.io/best-seat/
 - 2편 · 늘 하던 대로 (AS USUAL): https://rak-kr.github.io/best-seat/ep2/
+- 3편 · 커피 두 잔 (TWO CUPS): https://rak-kr.github.io/best-seat/ep3/
+- 4편 · 두 번째 상영 (SECOND SHOWING): https://rak-kr.github.io/best-seat/ep4/
+- 5편 · 8월 19일 (AUGUST 19, 마지막 편): https://rak-kr.github.io/best-seat/ep5/
 
 저장소: https://github.com/RAK-KR/best-seat
 
@@ -16,7 +19,13 @@
 - Q: 손에 든 것 쓰기 (2편)
 - Esc: 일시정지
 
-## 파일 구조 (1편은 루트, 2편은 `ep2/` 폴더에 같은 구조)
+## 파일 구조
+- 1편은 저장소 루트, 2편은 `ep2/` 폴더 (각자 독립된 구조)
+- 3~5편은 `ep3/`, `ep4/`, `ep5/` 폴더에 편마다 다른 것만 두고, 공통 엔진은 `shared/` 폴더에 있습니다.
+  - `shared/engine.js` 렌더링·입력·조사 창·수첩·힌트·엔딩, `shared/build.js` 방 짓는 도구, `shared/puzzle-core.js` 퍼즐 상태, `shared/verify-core.mjs` 검증
+  - 편 폴더: `content.js`(대사·단서), `puzzle.js`(진행), `room.js`(3D 공간), `draw.js`(그림), `game.js`(상호작용), `tools/`(검증·자동 플레이)
+
+### 1·2편 파일
 - `index.html` — 화면 뼈대
 - `css/style.css` — UI 스타일
 - `js/content.js` — 편지, 단서, 정답 데이터
@@ -28,4 +37,4 @@
 - `tools/verify.mjs` — 퍼즐 검증 (`node tools/verify.mjs`)
 - `tools/playtest.py` — 헤드리스 자동 플레이 테스트
 
-`tools/` 폴더와 `js/content.js`에는 정답이 들어 있으니, 직접 플레이하기 전에는 열어 보지 않는 것을 권합니다.
+각 편의 `tools/` 폴더와 `content.js`에는 정답과 스토리가 들어 있으니, 직접 플레이하기 전에는 열어 보지 않는 것을 권합니다.

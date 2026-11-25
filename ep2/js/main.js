@@ -347,7 +347,7 @@ function showNegative() {
   const c = makeCanvas(560, 320); drawNegative(c);
   openPanel({
     title: '필름 한 컷', content: img(c, 420),
-    text: '빛에 비춰 보니 이발 의자에 앉은 작은 아이. 벽시계는 10시를 가리킨다.<br>할아버지가 찍은 필름이다. 사진관 암실에 있던 빈 필름 통이 떠올랐다.',
+    text: '빛에 비춰 보니 이발 의자에 앉은 작은 아이. 벽시계는 10시를 가리킨다.<br>할아버지가 찍은 필름이다. 사진관 암실에 있던 빈 필름 통이 떠올랐다.<br>가장자리에 마커로 쓴 숫자 "1"이 반쯤 잘려 있다.',
     buttons: [{ label: '편지를 읽는다', onClick: () => { ui.close(); setTimeout(() => showDoc('letter'), 60); } }],
   });
 }
@@ -483,11 +483,11 @@ function showEnding() {
   last.style.animationDelay = `${1.8 + ENDING.length * 2.1}s`; body.appendChild(last);
   const secs = Math.round((performance.now() - startTime) / 1000);
   const meta = document.createElement('p'); meta.className = 'meta';
-  meta.innerHTML = `2편 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button> <button id="toEp1">1편으로</button><br><span class="next">3편은 준비 중입니다</span>`;
+  meta.innerHTML = `2편 플레이 시간 ${Math.floor(secs / 60)}분 ${secs % 60}초<br><button id="again">처음부터</button> <button id="toEp3">3편: 커피 두 잔</button>`;
   meta.style.animationDelay = `${3.6 + ENDING.length * 2.1}s`;
   body.appendChild(meta);
   $('again').onclick = () => location.reload();
-  $('toEp1').onclick = () => { location.href = '../'; };
+  $('toEp3').onclick = () => { location.href = '../ep3/'; };
   el.onmousedown = () => body.classList.add('all');
   ui.fade(false, '#fff8ea', 2000);
 }

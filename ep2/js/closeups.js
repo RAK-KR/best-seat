@@ -447,5 +447,9 @@ export function drawNegative(c) {
   ctx.strokeStyle = '#f2d39a'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - cr * 0.8); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(Math.PI * (2 / 3) * -1 - Math.PI / 2 + Math.PI * 2) * cr * 0.5, cy + Math.sin(-Math.PI / 2 - Math.PI / 3) * cr * 0.5); ctx.stroke();
+  // 필름 가장자리에 마커로 쓴 글씨 한 조각
+  ctx.fillStyle = 'rgba(245,240,225,0.92)';
+  ctx.font = `bold ${h * 0.16}px ${HAND}`; ctx.textAlign = 'center';
+  ctx.fillText('1', w / 2, h * 0.96);
   grain(ctx, w, h, 18, 31);
 }
