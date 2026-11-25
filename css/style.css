@@ -96,3 +96,13 @@ button { font-family: inherit; cursor: pointer; }
 #ending-lines .meta { font-family: 'Gothic A1', sans-serif; font-size: 14px; color: #8a7a62; margin-top: 40px; }
 #ending-lines .meta button { margin-top: 14px; }
 .end-photo { display: block; margin: 28px auto 10px; width: 300px; opacity: 0; animation: linein 2s forwards; }
+
+/* 가상 커서 (조사 창에서 포인터 잠금을 유지한 채 사용) */
+#vcursor { position: fixed; left: 0; top: 0; width: 16px; height: 16px; margin: -2px 0 0 -2px; z-index: 50; pointer-events: none; display: none;
+  background: #f4e8cf; clip-path: polygon(0 0, 0 100%, 30% 72%, 52% 100%, 66% 92%, 45% 66%, 85% 66%); filter: drop-shadow(0 1px 2px #000); }
+#vcursor.show { display: block; }
+button.vhover { background: #45331f !important; }
+.kp-grid button.vhover { background: #55595a !important; }
+.dial-val.cur { border-color: #d9b46a; box-shadow: 0 0 0 1px #d9b46a inset; }
+.keyhelp { font-size: 12px; color: #8a7a62; }
+#ending-lines.all p, #ending-lines.all .end-photo { animation: none; opacity: 1; }

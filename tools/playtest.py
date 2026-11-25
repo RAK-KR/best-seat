@@ -37,7 +37,9 @@ with sync_playwright() as p:
     pg.wait_for_timeout(800)
     pg.screenshot(path=f'{OUT}/00_title.png')
     pg.click('#start')
-    pg.wait_for_timeout(2500)
+    pg.wait_for_timeout(2200)
+    vis = pg.evaluate("[...document.querySelectorAll('#intro-lines p')].map(p => +getComputedStyle(p).opacity)")
+    check(all(v > 0.95 for v in vis), f'인트로 문장이 한 번에 모두 표시됨 {vis}')
     pg.screenshot(path=f'{OUT}/01_intro.png')
     pg.evaluate('window.__skipIntro()')
     pg.evaluate('window.__game.player.locked = true')
@@ -69,13 +71,9 @@ with sync_playwright() as p:
             pg.evaluate('window.__game.player.locked = true')
 
     def dial(code):
-        # 열린 다이얼 자물쇠에 번호 맞추고 당기기
-        pg.evaluate(f'''(() => {{
-            const d = document.querySelector('.dials');
-            const vals = d.querySelectorAll('.dial');
-            '{code}'.split('').forEach((n, i) => {{ for (let k = 0; k < +n; k++) vals[i].querySelector('button').click(); }});
-        }})()''')
-        pg.click('.dial-go')
+        # 열린 다이얼 자물쇠에 키보드로 번호를 넣고 Enter
+        for k in code: pg.keyboard.press(k)
+        pg.keyboard.press('Enter')
         pg.wait_for_timeout(900)
 
     def state(expr):
@@ -122,13 +120,17 @@ with sync_playwright() as p:
     use('photo', '11_photo')
     goto(-2.1, -3.9); aim(-2.67, 0.92, -4.2)
     use('letter3', '12_letter3')
-    aim(-2.55, 0.93, -3.95)
+    goto(-2.3, -4.0); aim(-2.91, 0.94, -4.42)
+    use('canister', '12b_canister')
+    goto(-2.1, -3.9); aim(-2.55, 0.93, -3.95)
     use('screwdriver')
     check('screwdriver' in state('inv'), '드라이버 획득')
     # 7. 퓨즈함 열기
     goto(1.45, -1.4); aim(1.45, 1.45, -2.4)
     use('fusebox', close=False)
-    dial('3142')
+    for k in '3142': pg.keyboard.press(k)
+    pg.keyboard.press('Enter')
+    pg.wait_for_timeout(900)
     pg.wait_for_timeout(500)
     check(state('fuseboxOpen'), '퓨즈함 열림')
     pg.screenshot(path=f'{OUT}/13_fusebox_open.png')
@@ -136,7 +138,11 @@ with sync_playwright() as p:
     # 8. 창문 마개
     goto(-2.2, -0.3); aim(-2.93, 1.55, -0.3)
     use('window', close=False)
-    pg.click('#panel-buttons button')
+    check(pg.evaluate("document.getElementById('vcursor').classList.contains('show')"), '조사 창에서 가상 커서 표시')
+    pg.evaluate('''(() => {
+        const r = document.querySelector('#panel-buttons button').getBoundingClientRect();
+        const c = window.__game.ui.cursor; c.x = r.x + r.width / 2; c.y = r.y + r.height / 2; c.place(); c.click();
+    })()''')
     pg.wait_for_timeout(700)
     pg.evaluate('window.__game.player.locked = true')
     check(not state('capOn'), '마개 열림')
@@ -146,7 +152,7 @@ with sync_playwright() as p:
     # 9. 퓨즈 뽑기
     goto(1.45, -1.4); aim(1.45, 1.45, -2.4)
     use('fusebox', close=False)
-    pg.click('#panel-buttons button')
+    pg.keyboard.press('Enter')
     pg.wait_for_timeout(800)
     pg.evaluate('window.__game.player.locked = true')
     check(not state('fuseIn'), '퓨즈 뽑힘')

@@ -58,21 +58,22 @@ const LABELS = {
   window: '막힌 창문', camera: '사진기', chair: '의자', whiteWall: '하얀 벽', rope: '줄',
   knotDesk: '매듭', knotDark: '매듭', knotBackdrop: '매듭', switch: '전등 스위치', bulb: '전구', lamp: '스탠드',
   backdrop: '배경천', fusebox: '퓨즈함', darkroomDoor: '암실 문', trays: '현상 접시', bottles: '약품 병',
-  chart: '공정표', photo: '사진', letter3: '편지', screwdriver: '드라이버', door: '출입문', keypad: '번호판',
+  chart: '공정표', photo: '사진', canister: '필름 통', letter3: '편지', screwdriver: '드라이버', door: '출입문', keypad: '번호판',
 };
 
 // ───────── 조사 화면 공통 ─────────
 function openPanel(opts) {
-  document.exitPointerLock?.();
-  ui.panel({ ...opts, onClose: () => { opts.onClose && opts.onClose(); resume(); } });
+  ui.panel({ ...opts, onClose: () => { activeInput = null; opts.onClose && opts.onClose(); resume(); } });
+  if (player.locked) ui.cursor.show();
 }
 function resume() {
-  if (!started || ended) return;
+  ui.cursor.hide();
+  if (!started || ended || document.pointerLockElement) return;
   setTimeout(() => { if (!ui.open) renderer.domElement.requestPointerLock?.(); }, 30);
 }
 function img(c, w) { return ui.canvasEl(c, w); }
 function tooDark(id) {
-  const lightNeeded = ['letter1', 'clock', 'portraitGrandpa', 'portraits', 'photo', 'chart', 'bottles', 'letter3', 'drawer', 'camera', 'trays'];
+  const lightNeeded = ['letter1', 'clock', 'portraitGrandpa', 'portraits', 'photo', 'chart', 'bottles', 'letter3', 'drawer', 'camera', 'trays', 'canister'];
   return dark(S) && lightNeeded.includes(id);
 }
 
@@ -111,7 +112,8 @@ const H = {
         }, 500);
       } else { sfx.wrong(); ui.shake(el); }
     });
-    openPanel({ title: '책상 서랍', content: lock, text: '서랍에 세 자리 다이얼 자물쇠가 달려 있다.' });
+    openPanel({ title: '책상 서랍', content: lock, text: '서랍에 세 자리 다이얼 자물쇠가 달려 있다.<br><span class="keyhelp">숫자 키로 바로 입력 · Enter 당기기</span>' });
+    activeInput = lock;
   },
 
   portraitGrandpa() {
@@ -210,8 +212,9 @@ const H = {
       });
       openPanel({
         title: '퓨즈함', content: lock,
-        text: '네 자리 다이얼 자물쇠. 다이얼 옆에 손톱으로 긁어 쓴 글씨가 있다.<br><b>"약 쓰는 순서"</b>',
+        text: '네 자리 다이얼 자물쇠. 다이얼 옆에 손톱으로 긁어 쓴 글씨가 있다.<br><b>"약 쓰는 순서"</b><br><span class="keyhelp">숫자 키로 바로 입력 · Enter 당기기</span>',
       });
+      activeInput = lock;
       return;
     }
     const lbl = S.fuseIn ? '주 퓨즈 뽑기' : '주 퓨즈 꽂기';
@@ -231,6 +234,13 @@ const H = {
   },
 
   trays() { say('현상 접시 세 개. 약품은 오래전에 말라붙었다.'); },
+
+  canister() {
+    openPanel({
+      title: '필름 통',
+      text: '작은 필름 통. 붙어 있는 종이에 또박또박한 할아버지 글씨가 있다.<br><b>"8. 19 — 현상하지 말 것"</b><br>뚜껑을 열어 보니 안은 비어 있다.',
+    });
+  },
 
   bottles() {
     act('look_bottles');
@@ -277,14 +287,13 @@ const H = {
       if (v === CODES.door && act('open_door')) { ui.close(); finish(); }
       else { sfx.wrong(); ui.shake(el); ui.setText('삑. 아니다.'); }
     });
-    keypadEl = kp;
     openPanel({
       title: '번호판', content: kp, text: dark(S) ? '버튼이 희미하게 보인다.' : '네 자리 번호를 눌러야 한다.',
-      onClose: () => { keypadEl = null; },
     });
+    activeInput = kp;
   },
 };
-let keypadEl = null;
+let activeInput = null;   // 키보드로 입력받는 자물쇠·번호판
 
 function interact(id) {
   if (!id || !H[id]) return;
@@ -394,7 +403,8 @@ function onUse() {
 
 document.addEventListener('keydown', (e) => {
   if (!started || ended) return;
-  if (keypadEl && ui.open && (/^[0-9]$/.test(e.key) || e.key === 'Backspace' || e.key === 'Enter')) { keypadEl.press(e.key); e.preventDefault(); return; }
+  if (activeInput && ui.open && /^([0-9]|Backspace|Enter|ArrowUp|ArrowDown|ArrowLeft|ArrowRight)$/.test(e.key)) { activeInput.press(e.key); e.preventDefault(); return; }
+  if (ui.open && !activeInput && e.key === 'Enter') { const b = document.querySelector('#panel-buttons button'); if (b) { b.click(); e.preventDefault(); return; } }
   if (e.code === 'KeyE' || e.code === 'Space') { e.preventDefault(); onUse(); }
   else if (e.code === 'Escape' && ui.open) ui.close();
   else if (e.code === 'Tab') { e.preventDefault(); if (ui.open) ui.close(); else notebook(); }
@@ -402,13 +412,20 @@ document.addEventListener('keydown', (e) => {
 });
 renderer.domElement.addEventListener('mousedown', (e) => {
   if (!started || ended || e.button !== 0) return;
+  if (ui.open && player.locked) { ui.cursor.click(); return; }
   if (!player.locked) { if (!ui.open) renderer.domElement.requestPointerLock?.(); return; }
   onUse();
 });
+document.addEventListener('mousemove', (e) => { if (ui.open && player.locked) ui.cursor.move(e.movementX, e.movementY); });
+renderer.domElement.addEventListener('wheel', (e) => { if (ui.open && player.locked) ui.cursor.wheel(e.deltaY); });
 $('overlay').addEventListener('mousedown', (e) => { if (e.target.id === 'overlay') ui.close(); });
+document.addEventListener('pointerlockerror', () => {
+  if (started && !ended && !ui.open) $('pause').classList.add('show');
+});
 $('pause').addEventListener('click', () => { renderer.domElement.requestPointerLock?.(); });
 document.addEventListener('pointerlockchange', () => {
   player.locked = document.pointerLockElement === renderer.domElement;
+  if (!player.locked) ui.cursor.hide();   // Esc로 잠금이 풀리면 실제 마우스로 조작
   $('pause').classList.toggle('show', started && !ended && !player.locked && !ui.open);
 });
 $('sens').addEventListener('input', (e) => { player.sensitivity = +e.target.value; try { localStorage.setItem('bestseat-sens', e.target.value); } catch (_) {} });
@@ -457,6 +474,7 @@ function showEnding() {
   meta.style.animationDelay = `${3.6 + lines.length * 2.1}s`;
   body.appendChild(meta);
   $('again').onclick = () => location.reload();
+  el.onmousedown = () => body.classList.add('all');
   ui.fade(false, '#fff8ea', 2000);
 }
 
@@ -470,7 +488,7 @@ async function start() {
   INTRO.forEach((t, i) => {
     const p = document.createElement('p');
     p.textContent = t;
-    p.style.animationDelay = `${0.4 + i * 2.2}s`;
+    p.style.animationDelay = '0.2s';
     box.appendChild(p);
   });
   const go = () => {

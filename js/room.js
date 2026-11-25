@@ -469,6 +469,19 @@ export function buildRoom(scene) {
   l3.rotation.y = 0.15;
   tag(l3, 'letter3');
   hit('letter3', 0.32, 0.06, 0.36, DARK.x0 + 0.33, 0.93, -4.2);
+  // 필름 통 (시리즈 씨앗: 이 편 안에서는 풀리지 않는 유일한 소품)
+  const can = new THREE.Group();
+  const cb = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.05, 16), new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4 }));
+  can.add(cb);
+  const cl = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.008, 16), new THREE.MeshStandardMaterial({ color: 0x8a8a8a, roughness: 0.4, metalness: 0.5 }));
+  cl.position.y = 0.028; can.add(cl);
+  const ct = new THREE.Mesh(new THREE.CylinderGeometry(0.0165, 0.0165, 0.02, 16, 1, true), M.paper);
+  can.add(ct);
+  can.position.set(DARK.x0 + 0.09, 0.938, -4.42);
+  can.traverse((o) => { o.castShadow = true; });
+  scene.add(can);
+  tag(can, 'canister');
+  hit('canister', 0.09, 0.09, 0.09, DARK.x0 + 0.09, 0.94, -4.42);
   // 드라이버
   const sd = new THREE.Group();
   const sdh = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.1, 10), new THREE.MeshStandardMaterial({ color: 0xc8a020, roughness: 0.4 }));

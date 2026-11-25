@@ -3,9 +3,51 @@ import { sfx } from './audio.js';
 
 const $ = (id) => document.getElementById(id);
 
+// 포인터 잠금을 유지한 채 조사 창을 조작하는 가상 커서
+const cursor = {
+  x: 0, y: 0, on: false,
+  el() { return $('vcursor'); },
+  show() {
+    this.on = true;
+    this.x = window.innerWidth / 2; this.y = window.innerHeight / 2;
+    this.el().classList.add('show');
+    this.place();
+  },
+  hide() { this.on = false; this.el().classList.remove('show'); this.hover(null); },
+  move(dx, dy) {
+    if (!this.on) return;
+    this.x = Math.max(0, Math.min(window.innerWidth - 1, this.x + dx));
+    this.y = Math.max(0, Math.min(window.innerHeight - 1, this.y + dy));
+    this.place();
+  },
+  place() {
+    this.el().style.transform = `translate(${this.x}px, ${this.y}px)`;
+    this.hover(document.elementFromPoint(this.x, this.y));
+  },
+  hover(el) {
+    const b = el && el.closest ? el.closest('button') : null;
+    if (this._h && this._h !== b) this._h.classList.remove('vhover');
+    if (b) b.classList.add('vhover');
+    this._h = b;
+  },
+  target() { return document.elementFromPoint(this.x, this.y); },
+  click() {
+    const el = this.target();
+    if (!el) return;
+    if (!el.closest('#panel')) { ui.close(); return; }   // 창 바깥을 누르면 닫기
+    const b = el.closest('button');
+    if (b) b.click();
+  },
+  wheel(dy) {
+    const el = this.target();
+    if (el && el.classList.contains('dial-val')) el.dispatchEvent(new WheelEvent('wheel', { deltaY: dy, cancelable: true }));
+  },
+};
+
 export const ui = {
   open: false,
   onClose: null,
+  cursor,
 
   prompt(text) {
     const el = $('prompt');
@@ -98,6 +140,18 @@ export const ui = {
     go.textContent = '당겨 보기';
     go.onclick = (e) => { e.stopPropagation(); onSubmit(vals.join(''), wrap); };
     wrap.appendChild(go);
+    // 키보드: 숫자를 누르면 현재 칸에 넣고 다음 칸으로
+    let cur = 0;
+    const mark = () => cols.forEach((c, i) => c.classList.toggle('cur', i === cur));
+    mark();
+    wrap.press = (k) => {
+      if (/^[0-9]$/.test(k)) { vals[cur] = +k; cols[cur].textContent = k; sfx.dial(); cur = Math.min(n - 1, cur + 1); }
+      else if (k === 'Backspace' || k === 'ArrowLeft') cur = Math.max(0, cur - 1);
+      else if (k === 'ArrowRight') cur = Math.min(n - 1, cur + 1);
+      else if (k === 'ArrowUp' || k === 'ArrowDown') { vals[cur] = (vals[cur] + (k === 'ArrowUp' ? 1 : 9)) % 10; cols[cur].textContent = vals[cur]; sfx.dial(); }
+      else if (k === 'Enter') { onSubmit(vals.join(''), wrap); cur = 0; }
+      mark();
+    };
     wrap.setValue = (s) => { s.split('').forEach((d, i) => { vals[i] = +d; cols[i].textContent = d; }); };
     return wrap;
   },
