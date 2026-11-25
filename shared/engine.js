@@ -157,6 +157,7 @@ export function run(game) {
     $('pause').classList.toggle('show', started && !ended && !player.locked && !ui.open);
   });
   $('sens').addEventListener('input', (e) => { player.sensitivity = +e.target.value; try { localStorage.setItem('bestseat-sens', e.target.value); } catch (_) {} });
+  window.addEventListener('bestseat-sens', (e) => { if (player) player.sensitivity = e.detail; });
 
   // ───────── 엔딩 ─────────
   function finish() {

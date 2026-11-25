@@ -22,7 +22,8 @@ export function initAudio() {
   if (ctx) return;
   ctx = new (window.AudioContext || window.webkitAudioContext)();
   master = ctx.createGain();
-  master.gain.value = 0.8;
+  master.gain.value = window.BSSettings ? window.BSSettings.get('vol') : 0.8;
+  window.addEventListener('bestseat-vol', (e) => { master.gain.setTargetAtTime(e.detail, ctx.currentTime, 0.03); });
   master.connect(ctx.destination);
   // 방 안의 낮은 웅웅거림 (전기가 들어와 있을 때)
   const hum = ctx.createOscillator();

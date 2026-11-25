@@ -115,3 +115,9 @@ button.vhover { background: #45331f !important; }
 /* 엔딩 버튼 (다음 편, 목록) */
 #ending-lines .meta button { background: #2c2117; color: #f0e2c4; border: 1px solid #6a5438; padding: 9px 20px; border-radius: 5px; font-size: 15px; margin: 14px 4px 0; cursor: pointer; font-family: inherit; }
 #ending-lines .meta button:hover { background: #45331f; }
+
+/* 일시정지 화면 설정 */
+#pause { flex-direction: column; gap: 22px; }
+.pause-opts { display: flex; flex-direction: column; gap: 12px; padding: 16px 22px; background: rgba(20,14,10,0.85); border: 1px solid #4a3c2c; border-radius: 8px; cursor: default; }
+.pause-opts label { font-size: 14px; color: #c9b48d; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+input[type="range"] { accent-color: #c9a55a; }
