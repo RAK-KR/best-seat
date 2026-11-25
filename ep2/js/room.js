@@ -5,7 +5,7 @@ import * as T from './textures.js';
 import {
   makeCanvas, drawPortrait, drawNote, drawWallText, drawFog, drawMarks, drawNewspaper, drawPriceBoard, drawCalendar,
 } from './closeups.js';
-import { MUGS } from './content.js';
+import { MUGS, DOCS } from './content.js';
 
 export const SHOP = { x0: -3.5, x1: 3.5, z0: -2.5, z1: 2.5, h: 2.7 };
 export const BACK = { x0: 3.5, x1: 6.3, z0: -2.5, z1: 0.5 };
@@ -51,6 +51,7 @@ export function buildRoom(scene) {
   const box = (w, hh, d, mat, x, y, z, parent) => add(new THREE.Mesh(new THREE.BoxGeometry(w, hh, d), mat), x, y, z, parent);
   const cyl = (rt, rb, hh, mat, x, y, z, parent, seg = 24) => add(new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, hh, seg), mat), x, y, z, parent);
   const plane = (w, hh, mat, x, y, z, ry = 0, rx = 0, parent) => {
+    if (!mat.transparent) mat.shadowSide = THREE.DoubleSide;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, hh), mat);
     m.rotation.set(rx, ry, 0);
     return add(m, x, y, z, parent);
@@ -79,8 +80,8 @@ export function buildRoom(scene) {
       if (yy1 <= yy0) return;
       const m = repeatMat(mat, Math.max(0.3, len / 1.0), Math.max(0.2, (yy1 - yy0) / 0.6));
       const hh = yy1 - yy0;
-      if (facing === 'n' || facing === 's') plane(len, hh, m, mid, (yy0 + yy1) / 2, fixed, ry);
-      else plane(len, hh, m, fixed, (yy0 + yy1) / 2, mid, ry);
+      if (facing === 'n' || facing === 's') plane(len + 0.04, hh + 0.02, m, mid, (yy0 + yy1) / 2, fixed, ry);
+      else plane(len + 0.04, hh + 0.02, m, fixed, (yy0 + yy1) / 2, mid, ry);
     };
     if (mats === 'back') { put(y0, y1, M.wallpaper); return; }
     put(y0, Math.min(y1, TILE_H), M.tile);
@@ -88,11 +89,11 @@ export function buildRoom(scene) {
   }
 
   // ── 바닥·천장 ──
-  plane(x1 - x0, z1 - z0, M.checker, 0, 0, 0, 0, -Math.PI / 2).castShadow = false;
-  plane(x1 - x0, z1 - z0, M.ceiling, 0, h, 0, 0, Math.PI / 2).castShadow = false;
+  plane(x1 - x0 + 0.04, z1 - z0 + 0.04, M.checker, 0, 0, 0, 0, -Math.PI / 2);
+  plane(x1 - x0 + 0.04, z1 - z0 + 0.04, M.ceiling, 0, h, 0, 0, Math.PI / 2);
   const bw = BACK.x1 - BACK.x0, bd = BACK.z1 - BACK.z0, bcx = (BACK.x0 + BACK.x1) / 2, bcz = (BACK.z0 + BACK.z1) / 2;
-  plane(bw, bd, M.lino, bcx, 0.001, bcz, 0, -Math.PI / 2).castShadow = false;
-  plane(bw, bd, M.ceiling, bcx, h, bcz, 0, Math.PI / 2).castShadow = false;
+  plane(bw + 0.04, bd + 0.04, M.lino, bcx, 0.001, bcz, 0, -Math.PI / 2);
+  plane(bw + 0.04, bd + 0.04, M.ceiling, bcx, h, bcz, 0, Math.PI / 2);
 
   // ── 가게 벽 ──
   // 북쪽 (거울 벽)
@@ -173,13 +174,13 @@ export function buildRoom(scene) {
 
   // 출입문 (유리 달린 나무 문)
   const door = new THREE.Group();
-  box(0.98, 0.9, 0.05, M.darkWood, 0, 0.45, 0, door);
-  box(0.98, 0.12, 0.05, M.darkWood, 0, 2.04, 0, door);
-  box(0.1, 1.1, 0.05, M.darkWood, -0.44, 1.45, 0, door);
-  box(0.1, 1.1, 0.05, M.darkWood, 0.44, 1.45, 0, door);
-  const dg = plane(0.8, 1.1, M.glass, 0, 1.45, 0, Math.PI, 0, door); dg.castShadow = false;
-  box(0.14, 0.03, 0.05, M.brass, 0.36, 1.0, -0.05, door);
-  door.position.set(-2.4, 0, z1 - 0.03);
+  box(0.98, 0.9, 0.05, M.darkWood, 0.49, 0.45, 0, door);
+  box(0.98, 0.12, 0.05, M.darkWood, 0.49, 2.04, 0, door);
+  box(0.1, 1.1, 0.05, M.darkWood, 0.05, 1.45, 0, door);
+  box(0.1, 1.1, 0.05, M.darkWood, 0.93, 1.45, 0, door);
+  const dg = plane(0.8, 1.1, M.glass, 0.49, 1.45, 0, Math.PI, 0, door); dg.castShadow = false;
+  box(0.14, 0.03, 0.05, M.brass, 0.85, 1.0, -0.05, door);
+  door.position.set(-2.89, 0, z1 - 0.03);
   scene.add(door);
   tag(door, 'entrance');
   refs.door = door;
@@ -272,7 +273,7 @@ export function buildRoom(scene) {
   refs.fogC = fogC; refs.fogTex = fogTex; refs.drawFog = (s) => { drawFog(fogC, s); fogTex.needsUpdate = true; };
   // 거울에 붙은 쪽지들
   const cardC = makeCanvas(400, 520);
-  drawNote(cardC, ['늘 하던 대로', '1 간판부터', '2 수건 데우고', '3 의자 맞추고', '4 손님 컵', '5 뒤를 보여 줘라'], 5);
+  drawNote(cardC, DOCS.card.body.filter((l) => l), 5);
   tag(canvasPlane(cardC, 0.3, 0.39, MIRROR.x - 0.68, MIRROR.y - 0.36, z0 + 0.037), 'card');
   const noteC = makeCanvas(480, 160); drawNote(noteC, ['이 사람은 나다'], 9);
   tag(canvasPlane(noteC, 0.36, 0.12, MIRROR.x, MIRROR.y + 0.5, z0 + 0.037), 'note');
@@ -554,7 +555,7 @@ export function buildRoom(scene) {
   // 뒷방 백열등
   const bb = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 12), new THREE.MeshStandardMaterial({ color: 0xfff1d0, emissive: 0xffd08a, emissiveIntensity: 3 }));
   bb.position.set(4.9, h - 0.35, -1.0); scene.add(bb);
-  const bl = new THREE.PointLight(0xffc98a, 4.5, 0, 1.6);
+  const bl = new THREE.PointLight(0xffc98a, 4.5, 4.2, 1.6);
   bl.position.set(4.9, h - 0.45, -1.0);
   scene.add(bl);
 

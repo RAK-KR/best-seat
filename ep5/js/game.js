@@ -186,12 +186,14 @@ const game = {
     if (!has('neg5')) return '사무실 책상 서랍을 열어 보세요.';
     if (!k.k_order) return '라이트박스에 네 컷을 찍힌 시각 순서대로 놓으세요. 이발소 10시, 다방 12시 반, 극장 1시와 3시, 정미소 3시 20분.';
     if (!S.safeOpen) return '이어진 가장자리 글씨가 금고 번호입니다. 1540.';
-    return '옆문으로 나가면 됩니다.';
+    return '정미소 밖으로 나가면 됩니다.';
   },
 
   update(ctx, dt) {
     const { S, refs } = ctx;
     if (!refs) return;
+    // 금고를 연 뒤 정미소 밖(마당)으로 나오면 엔딩
+    if (S.safeOpen && !S.done && ctx.started && !ctx.ui.open && ctx.player.pos.z > 3.25) { ctx.act('leave'); ctx.finish(); }
     const e = (k, target, sp = 4) => { anim[k] += (target - anim[k]) * Math.min(1, dt * sp); return anim[k]; };
     refs.sideDoor.rotation.y = -e('side', S.millOpen ? 1 : 0) * 1.6;
     refs.officeDoor.rotation.y = e('office', S.officeOpen ? 1 : 0) * 1.6;

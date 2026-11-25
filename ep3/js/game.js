@@ -66,8 +66,8 @@ const game = {
       },
       recipe() {
         act('look_recipe');
-        const c = makeCanvas(360, 480); drawRecipe(c);
-        openPanel({ title: '조리법 카드', content: img(c, 300), text: '계산대 옆에 세워 둔 카드. 숟가락 수가 적혀 있다.' });
+        const c = makeCanvas(560, 420); drawRecipe(c);
+        openPanel({ title: '조리법 카드', content: img(c, 460), text: '계산대 옆에 세워 둔 카드. 숟가락 수가 적혀 있다.' });
       },
       orders() { act('look_orders'); showDoc('orders'); },
       machine() {

@@ -28,7 +28,10 @@ export function buildRoom(scene, ctx) {
   const woodPlank = K.std({ map: T.roughBoardTexture(), roughness: 0.9 });
 
   // ── 길가와 마당 ──
-  K.floor(-6, 6, 6, 9, K.repeat(asphalt, 4, 1));
+  K.floor(-12, 12, 6, 12, K.repeat(asphalt, 8, 2));
+  // 길 건너 인도
+  K.box(24, 0.15, 1.6, K.std({ map: T.plasterTexture(), color: 0xb8b2a6, roughness: 1 }), 0, 0.075, 9.9);
+  K.box(24, 0.15, 0.2, concrete, 0, 0.075, 7.85);
   K.floor(-4, 4, 3, 6, K.repeat(concrete, 3, 1));
   // 이웃 담 (양옆)
   for (const sx of [-4, 4]) {

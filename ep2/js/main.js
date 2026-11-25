@@ -573,7 +573,7 @@ function update(dt, t) {
   anim.ward = ease(anim.ward, S.wardrobeOpen ? 1 : 0, 4);
   refs.wardL.rotation.y = anim.ward * 1.4; refs.wardR.rotation.y = -anim.ward * 1.4;
   anim.door = ease(anim.door, anim.doorTarget || 0, 2);
-  refs.door.rotation.y = anim.door * 1.2;
+  refs.door.rotation.y = anim.door * 1.4;
   refs.envelope.visible = !has(S, 'envelope');
 }
 

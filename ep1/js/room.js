@@ -43,6 +43,7 @@ export function buildRoom(scene) {
   };
   const box = (w, h, d, mat, x, y, z, parent) => add(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat), new THREE.Vector3(x, y, z), parent);
   const plane = (w, h, mat, x, y, z, ry = 0, rx = 0, parent) => {
+    if (!mat.transparent) mat.shadowSide = THREE.DoubleSide;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
     m.rotation.set(rx, ry, 0);
     return add(m, new THREE.Vector3(x, y, z), parent);
@@ -63,12 +64,12 @@ export function buildRoom(scene) {
   // ── 바닥·천장 ──
   const floorMat = M.floor.clone();
   floorMat.map = M.floor.map.clone(); floorMat.map.repeat.set(3, 3); floorMat.map.needsUpdate = true;
-  plane(x1 - x0, z1 - z0, floorMat, 0, 0, 0, 0, -Math.PI / 2).castShadow = false;
-  plane(x1 - x0, z1 - z0, M.ceiling, 0, h, 0, 0, Math.PI / 2).castShadow = false;
+  plane(x1 - x0 + 0.04, z1 - z0 + 0.04, floorMat, 0, 0, 0, 0, -Math.PI / 2);
+  plane(x1 - x0 + 0.04, z1 - z0 + 0.04, M.ceiling, 0, h, 0, 0, Math.PI / 2);
   const dw = DARK.x1 - DARK.x0, dd = DARK.z1 - DARK.z0;
   const dFloor = M.floor.clone(); dFloor.map = M.floor.map.clone(); dFloor.map.repeat.set(1.1, 1); dFloor.map.needsUpdate = true;
-  plane(dw, dd, dFloor, (DARK.x0 + DARK.x1) / 2, 0, (DARK.z0 + DARK.z1) / 2, 0, -Math.PI / 2).castShadow = false;
-  plane(dw, dd, M.darkWall, (DARK.x0 + DARK.x1) / 2, h, (DARK.z0 + DARK.z1) / 2, 0, Math.PI / 2).castShadow = false;
+  plane(dw + 0.04, dd + 0.04, dFloor, (DARK.x0 + DARK.x1) / 2, 0, (DARK.z0 + DARK.z1) / 2, 0, -Math.PI / 2);
+  plane(dw + 0.04, dd + 0.04, M.darkWall, (DARK.x0 + DARK.x1) / 2, h, (DARK.z0 + DARK.z1) / 2, 0, Math.PI / 2);
 
   // ── 벽 ──
   // 남쪽 (출입문)
@@ -100,11 +101,11 @@ export function buildRoom(scene) {
 
   // ── 출입문 ──
   const door = new THREE.Group();
-  box(0.92, 2.05, 0.06, M.darkWood, 0, 1.025, 0, door);
-  box(0.8, 0.85, 0.02, M.wood, 0, 1.5, -0.035, door);
-  box(0.8, 0.85, 0.02, M.wood, 0, 0.55, -0.035, door);
-  const handle = box(0.12, 0.03, 0.05, M.brass, -0.34, 1.0, -0.07, door);
-  door.position.set(0.85, 0, z1 - 0.03);
+  box(0.92, 2.05, 0.06, M.darkWood, -0.46, 1.025, 0, door);
+  box(0.8, 0.85, 0.02, M.wood, -0.46, 1.5, -0.035, door);
+  box(0.8, 0.85, 0.02, M.wood, -0.46, 0.55, -0.035, door);
+  const handle = box(0.12, 0.03, 0.05, M.brass, -0.8, 1.0, -0.07, door);
+  door.position.set(0.85 + 0.46, 0, z1 - 0.03);
   scene.add(door);
   tag(door, 'door');
   refs.door = door;
@@ -498,8 +499,9 @@ export function buildRoom(scene) {
   const safeMat = new THREE.MeshStandardMaterial({ color: 0x400000, emissive: 0xff2010, emissiveIntensity: 2 });
   const safe = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.2), safeMat);
   safe.position.set(DARK.x1 - 0.05, 2.25, -3.5); scene.add(safe);
-  const safeLight = new THREE.PointLight(0xff2a14, 2.4, 0, 1.6);
+  const safeLight = new THREE.PointLight(0xff2a14, 2.4, 2.8, 1.6);
   safeLight.position.set(DARK.x1 - 0.2, 2.2, -3.5);
+  safeLight.castShadow = true; safeLight.shadow.mapSize.set(256, 256); safeLight.shadow.bias = -0.003;
   scene.add(safeLight);
   refs.safeMat = safeMat; refs.safeLight = safeLight;
 

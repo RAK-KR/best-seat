@@ -565,7 +565,7 @@ function updateAnims(dt) {
   refs.fuseLever.rotation.x = anim.lever * 2.4;
   refs.fusePlug.position.z = 0.06 + anim.lever * 0.12;
   refs.fusePlug.visible = anim.lever < 0.9;
-  refs.door.rotation.y = -anim.door * 1.3;
+  refs.door.rotation.y = -anim.door * 1.4;
 }
 
 // ───────── 시작 ─────────

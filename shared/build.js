@@ -20,6 +20,8 @@ export function makeKit(scene) {
     cyl: (rt, rb, h, mat, x, y, z, parent, seg = 24) => add(new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat), x, y, z, parent),
     sphere: (r, mat, x, y, z, parent) => add(new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), mat), x, y, z, parent),
     plane(w, h, mat, x, y, z, ry = 0, rx = 0, parent) {
+      // 얇은 면도 양쪽 다 그림자를 막게 해서 벽·천장 틈으로 빛이 새지 않게 한다
+      if (mat.shadowSide !== THREE.DoubleSide && !mat.transparent) mat.shadowSide = THREE.DoubleSide;
       const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
       m.rotation.set(rx, ry, 0);
       return add(m, x, y, z, parent);
@@ -50,15 +52,16 @@ export function makeKit(scene) {
         if (yy1 <= yy0 + 0.001) return;
         const m = kit.repeat(mat, Math.max(0.3, len / 1.2), Math.max(0.2, (yy1 - yy0) / 0.8));
         const hh = yy1 - yy0;
-        if (facing === 'n' || facing === 's') kit.plane(len, hh, m, mid, (yy0 + yy1) / 2, fixed, ry);
-        else kit.plane(len, hh, m, fixed, (yy0 + yy1) / 2, mid, ry);
+        // 모서리가 살짝 겹치게 (틈으로 빛이 새지 않도록)
+        if (facing === 'n' || facing === 's') kit.plane(len + 0.04, hh + 0.02, m, mid, (yy0 + yy1) / 2, fixed, ry);
+        else kit.plane(len + 0.04, hh + 0.02, m, fixed, (yy0 + yy1) / 2, mid, ry);
       };
       if (!lower) { put(y0, y1, upper); return; }
       put(y0, Math.min(y1, split), lower);
       put(Math.max(y0, split), y1, upper);
     },
-    floor(x0, x1, z0, z1, mat, y = 0) { const p = kit.plane(x1 - x0, z1 - z0, mat, (x0 + x1) / 2, y, (z0 + z1) / 2, 0, -Math.PI / 2); p.castShadow = false; return p; },
-    ceiling(x0, x1, z0, z1, mat, y) { const p = kit.plane(x1 - x0, z1 - z0, mat, (x0 + x1) / 2, y, (z0 + z1) / 2, 0, Math.PI / 2); p.castShadow = false; return p; },
+    floor(x0, x1, z0, z1, mat, y = 0) { return kit.plane(x1 - x0 + 0.04, z1 - z0 + 0.04, mat, (x0 + x1) / 2, y, (z0 + z1) / 2, 0, -Math.PI / 2); },
+    ceiling(x0, x1, z0, z1, mat, y) { return kit.plane(x1 - x0 + 0.04, z1 - z0 + 0.04, mat, (x0 + x1) / 2, y, (z0 + z1) / 2, 0, Math.PI / 2); },
     // 문 (경첩 그룹). 반환된 pivot의 rotation.y로 연다
     door(x, z, axis, width, mat, id, handleMat) {
       const pivot = new THREE.Group();
@@ -71,8 +74,9 @@ export function makeKit(scene) {
       kit.tag(pivot, id);
       return pivot;
     },
-    pointLight(color, intensity, x, y, z, shadow = false, size = 512) {
-      const l = new THREE.PointLight(color, intensity, 0, 1.6);
+    // dist: 빛이 닿는 거리 (그림자 없는 등이 벽 너머 옆방까지 비추지 않게)
+    pointLight(color, intensity, x, y, z, shadow = false, size = 512, dist = 7) {
+      const l = new THREE.PointLight(color, intensity, dist, 1.6);
       l.position.set(x, y, z);
       if (shadow) { l.castShadow = true; l.shadow.mapSize.set(size, size); l.shadow.bias = -0.002; l.shadow.radius = 3; }
       scene.add(l);

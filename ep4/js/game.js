@@ -61,7 +61,7 @@ const game = {
           });
         }, 300);
         return true;
-      }, '하루 깡통', '필름 깡통. 뚜껑에 네 자리 번호 자물쇠. 라벨: <b>"하루 — 상영 시각"</b>');
+      }, '하루 깡통', '필름 깡통. 뚜껑에 네 자리 번호 자물쇠. 라벨에 덕배 아저씨 글씨: <b>"하루 — 그날 영화를 튼 두 시각을 이어서"</b>');
     }
     function showNegative() {
       const c = makeCanvas(560, 320); drawNegative(c);
@@ -74,7 +74,7 @@ const game = {
     return {
       entrance() {
         if (S.canOpen) { act('leave'); ctx.finish(); return; }
-        say('아직 "하루 깡통"을 못 찾았다.');
+        say(has('can') ? '아직 깡통을 열지 못했다.' : '아직 "하루 깡통"을 못 찾았다.');
       },
       screen() {
         if (S.running) { footagePanel(); return; }
@@ -165,7 +165,7 @@ const game = {
     if (!S.mounted) return '영사기에 릴을 거세요.';
     if (!k.k_footage) return S.running ? '스크린을 보세요. 객석으로 내려가거나 영사창으로 내다볼 수 있습니다.' : '영사기를 돌리세요.';
     if (!has('can')) return '필름 마지막 장면이 가리킨 자리, 7열 8번 의자 밑을 보세요.';
-    if (!S.canOpen) return k.k_log ? '깡통 라벨은 "상영 시각". 일지의 8월 19일 두 시각을 이어 보세요.' : '영사 일지에 8월 19일 기록이 있습니다.';
+    if (!S.canOpen) return k.k_log ? '깡통 라벨대로, 일지에 적힌 8월 19일 두 상영 시각(13시, 15시)의 "시"를 이어 붙이세요.' : '라벨의 "그날"은 8월 19일입니다. 영사실 책상의 영사 일지를 보세요.';
     return '이제 극장을 나가면 됩니다.';
   },
 

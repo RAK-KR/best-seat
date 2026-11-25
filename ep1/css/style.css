@@ -111,3 +111,7 @@ button.vhover { background: #45331f !important; }
 .eplink { display: inline-block; margin-top: 18px; font-size: 13px; color: #c9b48d; text-decoration: none; border-bottom: 1px solid #6a5438; }
 .eplink:hover { color: #f0e2c4; }
 .hublink { display: block; width: fit-content; margin: 16px auto 0; }
+
+/* 엔딩 버튼 (다음 편, 목록) */
+#ending-lines .meta button { background: #2c2117; color: #f0e2c4; border: 1px solid #6a5438; padding: 9px 20px; border-radius: 5px; font-size: 15px; margin: 14px 4px 0; cursor: pointer; font-family: inherit; }
+#ending-lines .meta button:hover { background: #45331f; }

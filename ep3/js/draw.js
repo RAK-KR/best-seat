@@ -32,15 +32,18 @@ export function drawRecipe(c) {
   ctx.fillStyle = '#f3ead2'; ctx.fillRect(0, 0, w, h);
   vignette(ctx, w, h, 0.25, '120,90,40');
   ctx.fillStyle = '#5a2a1a'; ctx.textAlign = 'center';
-  ctx.font = `bold ${h * 0.09}px ${SERIF}`; ctx.fillText('커피 타는 법', w / 2, h * 0.14);
+  ctx.font = `bold ${h * 0.09}px ${SERIF}`; ctx.fillText('커피 타는 법', w / 2, h * 0.15);
   ctx.font = `${h * 0.05}px ${SERIF}`; ctx.fillStyle = '#6a4a3a';
   ctx.fillText('(숟가락 기준: 커피 · 설탕 · 프림)', w / 2, h * 0.23);
   RECIPES.forEach((rc, i) => {
-    const y = h * (0.38 + i * 0.2);
+    const y = h * (0.4 + i * 0.2);
     ctx.textAlign = 'left'; ctx.fillStyle = '#2a1a10';
-    ctx.font = `bold ${h * 0.075}px ${SERIF}`; ctx.fillText(rc.name, w * 0.1, y);
-    ctx.font = `${h * 0.055}px ${SERIF}`;
-    ctx.fillText(`커피 ${rc.coffee}  설탕 ${rc.sugar}  프림 ${rc.cream}`, w * 0.42, y);
+    ctx.font = `bold ${h * 0.07}px ${SERIF}`; ctx.fillText(rc.name, w * 0.07, y);
+    // 숫자 세 칸을 표처럼 고정 위치에
+    ctx.font = `${h * 0.05}px ${SERIF}`;
+    [['커피', rc.coffee], ['설탕', rc.sugar], ['프림', rc.cream]].forEach(([k, v], j) => {
+      ctx.fillText(`${k} ${v}`, w * (0.38 + j * 0.205), y);
+    });
   });
   grain(ctx, w, h, 10, 7);
 }

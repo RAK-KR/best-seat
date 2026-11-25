@@ -173,10 +173,10 @@ export function buildRoom(scene, ctx) {
   ord.position.set(-0.2, 1.045, z0 + 0.95); scene.add(ord); K.tag(ord, 'orders');
   K.hit('orders', 0.26, 0.12, 0.32, -0.2, 1.08, z0 + 0.95);
   // 조리법 카드
-  const rc = makeCanvas(360, 480); drawRecipe(rc);
-  const rcp = K.canvasPlane(rc, 0.18, 0.24, 0.5, 1.17, z0 + 0.82, 0);
+  const rc = makeCanvas(560, 420); drawRecipe(rc);
+  const rcp = K.canvasPlane(rc, 0.28, 0.21, 0.5, 1.15, z0 + 0.82, 0);
   rcp.rotation.x = -0.25; K.tag(rcp, 'recipe');
-  K.hit('recipe', 0.22, 0.28, 0.1, 0.5, 1.17, z0 + 0.82);
+  K.hit('recipe', 0.32, 0.26, 0.1, 0.5, 1.15, z0 + 0.82);
   // 차림표
   const mc = makeCanvas(600, 520); drawMenu(mc);
   K.tag(K.canvasPlane(mc, 1.0, 0.86, 0.2, 2.2, z0 + 0.02), 'menu');
@@ -289,7 +289,11 @@ export function buildRoom(scene, ctx) {
   K.tag(cbx, 'candles'); K.hit('candles', 0.3, 0.18, 0.22, -1.2, 1.68, KIT.z0 + 0.15);
   // 찬장 (동쪽 벽, 잠김)
   const cup = new THREE.Group();
+  K.box(0.42, 1.0, 1.04, M.darkWood, 0.03, -1.05, 0, cup);
+  K.box(0.02, 0.4, 0.46, M.wood, -0.19, -0.85, 0.25, cup);
+  K.box(0.02, 0.4, 0.46, M.wood, -0.19, -0.85, -0.25, cup);
   K.box(0.35, 0.9, 1.0, M.wood, 0, 0, 0, cup);
+  K.box(0.44, 0.04, 1.08, M.darkWood, 0.03, 0.47, 0, cup);
   const cupDoor = new THREE.Group();
   K.box(0.03, 0.86, 0.48, M.darkWood, 0, 0, 0.24, cupDoor);
   K.box(0.02, 0.1, 0.03, M.brass, -0.02, 0, 0.42, cupDoor);
@@ -298,6 +302,7 @@ export function buildRoom(scene, ctx) {
   const cakeBox = K.box(0.25, 0.14, 0.25, K.std({ color: 0xf0e6d2, roughness: 0.8 }), 0, -0.3, -0.22, cup);
   cup.position.set(KIT.x1 - 0.2, 1.55, -4.4); scene.add(cup); K.tag(cup, 'cupboard');
   K.hit('cupboard', 0.45, 0.95, 1.05, KIT.x1 - 0.25, 1.55, -4.4);
+  K.collide(KIT.x1 - 0.5, KIT.x1, -4.95, -3.85);
   refs.cupPivot = cupPivot; refs.cakeBox = cakeBox;
   // 앞치마 (서쪽 벽 고리)
   const apron = K.plane(0.5, 0.75, K.std({ color: 0xc86a6a, roughness: 1, side: THREE.DoubleSide }), KIT.x0 + 0.04, 1.35, -4.0, Math.PI / 2);
