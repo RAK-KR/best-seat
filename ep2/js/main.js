@@ -575,7 +575,7 @@ function update(dt, t) {
   refs.wardL.rotation.y = anim.ward * 1.4; refs.wardR.rotation.y = -anim.ward * 1.4;
   anim.door = ease(anim.door, anim.doorTarget || 0, 2);
   refs.door.rotation.y = anim.door * 1.4;
-  refs.envelope.visible = !has(S, 'envelope');
+  refs.envelope.visible = !!S.k.k_envSeen && !has(S, 'envelope');   // 손거울로 보기 전에는 존재 자체를 모른다
 }
 
 // ───────── 시작 ─────────

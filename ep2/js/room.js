@@ -209,14 +209,17 @@ export function buildRoom(scene) {
   const pbFace = plane(1.14, 0.32, new THREE.MeshStandardMaterial({ map: tex(pbC), roughness: 0.7 }), 0, 0, -0.021, Math.PI, 0, pb);
   pbFace.castShadow = false;
   box(1.2, 0.025, 0.12, M.darkWood, 0, 0.19, 0.04, pb);
+  // 윗면 앞쪽 테두리: 바닥에서 올려다보면 윗면(봉투)이 가려진다
+  box(1.2, 0.05, 0.015, M.darkWood, 0, 0.2275, -0.0125, pb);
   pb.position.set(-2.4, 2.36, z1 - 0.1);
   pb.rotation.x = 0.12;
   scene.add(pb);
   tag(pb, 'priceBoard');
-  const env = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.012, 0.1), new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.8 }));
-  env.position.set(-2.32, 2.575, z1 - 0.07);
-  env.rotation.set(0.1, 0.15, 0);
-  scene.add(env);
+  // 봉투는 테두리 뒤 윗면에 납작하게 눕혀 둔다 (테두리보다 낮음)
+  const env = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.008, 0.08), new THREE.MeshStandardMaterial({ color: 0xe6d8b6, roughness: 0.8 }));
+  env.position.set(0.08, 0.2065, 0.05);
+  env.rotation.set(0, 0.15, 0);
+  pb.add(env);
   refs.envelope = env;
   refs.envHit = hit('envelope', 0.4, 0.2, 0.3, -2.32, 2.56, z1 - 0.12);
 
