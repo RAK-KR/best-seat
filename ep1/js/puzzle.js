@@ -93,7 +93,8 @@ export const ACTIONS = {
     apply: (s) => { s.fuseboxOpen = true; },
   },
   toggle_fuse: {
-    req: (s) => s.fuseboxOpen,
+    // 마개가 닫혀 있으면 퓨즈를 뽑을 수 없다 (깜깜해지면 창문을 못 찾는 문제 방지)
+    req: (s) => s.fuseboxOpen && (!s.fuseIn || !s.capOn),
     apply: (s) => { s.fuseIn = !s.fuseIn; },
   },
 

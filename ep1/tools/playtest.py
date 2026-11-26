@@ -135,6 +135,10 @@ with sync_playwright() as p:
     pg.wait_for_timeout(500)
     check(state('fuseboxOpen'), '퓨즈함 열림')
     pg.screenshot(path=f'{OUT}/13_fusebox_open.png')
+    pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
+    check(state('fuseIn'), '마개가 닫혀 있으면 퓨즈를 못 뺌')
+    check('마개' in pg.inner_text('#panel-text'), '순서 안내 문구 표시')
+    pg.screenshot(path=f'{OUT}/13b_fuse_locked.png')
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300); pg.evaluate('window.__game.player.locked = true')
     # 8. 창문 마개
     goto(-2.2, -0.3); aim(-2.93, 1.55, -0.3)

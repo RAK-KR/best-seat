@@ -220,7 +220,13 @@ const H = {
     const lbl = S.fuseIn ? '주 퓨즈 뽑기' : '주 퓨즈 꽂기';
     const t = S.fuseIn ? '퓨즈함 안에 주 퓨즈와 레버가 있다. 이걸 뽑으면 방 전체의 전기가 끊긴다.<br>문짝 안쪽에 크고 삐뚤빼뚤한 글씨가 있다. <b>"스위치는 내가 망가뜨렸다. 다 보고 나서 꺼라."</b>'
       : '주 퓨즈가 빠져 있다. 손으로 더듬어 자리를 찾을 수 있다.';
-    openPanel({ title: '퓨즈함', text: t, buttons: [{ label: lbl, onClick: () => { toggleFuse(); ui.close(); } }] });
+    openPanel({ title: '퓨즈함', text: t, buttons: [{ label: lbl, onClick: () => {
+      if (S.fuseIn && S.capOn) {
+        ui.setText('불을 끄기 전에 할 일이 남은 것 같다.<br><b>창문 가운데 놋쇠 마개가 아직 닫혀 있다.</b> 지금 불을 끄면 아무것도 보이지 않을 것이다.');
+        return;
+      }
+      toggleFuse(); ui.close();
+    } }] });
   },
 
   darkroomDoor() {
@@ -315,6 +321,7 @@ function toggleCap() {
 }
 
 function toggleFuse() {
+  if (S.fuseIn && S.capOn) return;
   act('toggle_fuse');
   sfx.fuse();
   setPower(S.fuseIn);
